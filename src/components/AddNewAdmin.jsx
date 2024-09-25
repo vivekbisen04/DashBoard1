@@ -6,7 +6,7 @@ import axios from "axios";
 
 const AddNewAdmin = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
-  const yy="https://backend1-96bk.onrender.com";
+  const yy = "https://backend1-96bk.onrender.com";
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -54,55 +54,65 @@ const AddNewAdmin = () => {
   }
 
   return (
-    <section className="page">
-      <section className="container form-component add-admin-form">
-      <img src="/logo.png" alt="logo" className="logo"/>
-        <h1 className="form-title">ADD NEW ADMIN</h1>
-        <form onSubmit={handleAddNewAdmin}>
-          <div>
+    <section className="min-h-screen flex items-center justify-center  ">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+        <img src="/logo.png" alt="logo" className="w-24 mx-auto mb-6" />
+        <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">ADD NEW ADMIN</h1>
+        <form onSubmit={handleAddNewAdmin} className="space-y-4">
+          <div className="flex flex-col md:flex-row md:space-x-4">
             <input
               type="text"
               placeholder="First Name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="text"
               placeholder="Last Name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <div>
+          <div className="flex flex-col md:flex-row md:space-x-4">
             <input
-              type="text"
+              type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
-              type="number"
+              type="tel"
               placeholder="Mobile Number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <div>
+          <div className="flex flex-col md:flex-row md:space-x-4">
             <input
-              type="number"
+              type="text"
               placeholder="NIC"
               value={nic}
               onChange={(e) => setNic(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
-              type={"date"}
+              type="date"
               placeholder="Date of Birth"
               value={dob}
               onChange={(e) => setDob(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <div>
-            <select value={gender} onChange={(e) => setGender(e.target.value)}>
+          <div className="flex flex-col md:flex-row md:space-x-4">
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -112,13 +122,19 @@ const AddNewAdmin = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <div style={{ justifyContent: "center", alignItems: "center" }}>
-            <button type="submit">ADD NEW ADMIN</button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+            >
+              ADD NEW ADMIN
+            </button>
           </div>
         </form>
-      </section>
+      </div>
     </section>
   );
 };

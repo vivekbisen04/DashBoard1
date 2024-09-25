@@ -11,8 +11,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from "./components/Sidebar";
 import AddNewAdmin from "./components/AddNewAdmin";
-import "./App.css";
 import JobApplicationDetail from "./components/JobApplicationDetail";
+import "./index.css";
+// import "./App.css";
 
 const App = () => {
   const { isAuthenticated, setIsAuthenticated, admin, setAdmin } =
@@ -22,12 +23,17 @@ const App = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(
-          `${yy}/api/v1/user/admin/me`,
-          {
-            withCredentials: true,
+        // const response = await axios.get(
+        //   `${yy}/api/v1/user/admin/me`,
+        //   {
+        //     withCredentials: true,
+        //   }
+        // );
+        const response = {
+          data: {
+            user:"me"
           }
-        );
+        }
         setIsAuthenticated(true);
         setAdmin(response.data.user);
       } catch (error) {
