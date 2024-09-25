@@ -22,7 +22,7 @@ const JobApplicationDetail = () => {
   useEffect(() => {
     const fetchJobApplication = async () => {
       try {
-         const response = await fetch(
+        const response = await fetch(
           `${yy}/api/v1/jobApplication/detail/${reg}`,
           {
             credentials: 'include'
