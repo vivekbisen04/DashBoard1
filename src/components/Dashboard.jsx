@@ -3,18 +3,16 @@ import { Context } from "../main";
 import { Navigate, Link, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { GoCheckCircleFill } from "react-icons/go";
 import { AiFillCloseCircle } from "react-icons/ai";
 import Modal from "react-modal";
 import JobApplicationDetail from "./JobApplicationDetail";
-import "./Dashboard.css";
 import Papa from "papaparse";
 
 // Setting the app element for accessibility
 Modal.setAppElement("#root");
 
 const Dashboard = () => {
-  const yy="https://backend1-96bk.onrender.com";
+  const yy = "https://backend1-96bk.onrender.com";
   const [jobApplications, setJobApplications] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -41,6 +39,7 @@ const Dashboard = () => {
         );
         setJobApplications(data.jobApplications);
         setFilteredApplications(data.jobApplications);
+        console.log()
       } catch (error) {
         setJobApplications([]);
         setFilteredApplications([]);
@@ -101,21 +100,21 @@ const Dashboard = () => {
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
 
-  useEffect(() => {
-    const filtered = jobApplications.filter((application) => {
-      return (
-        (filters.cgpa === "" || application.cgpa >= parseFloat(filters.cgpa)) &&
-        (filters.hsc === "" || application.hsc >= parseFloat(filters.hsc)) &&
-        (filters.ssc === "" || application.ssc >= parseFloat(filters.ssc)) &&
-        (filters.gap_year === "" ||
-          (application.gap_year && application.gap_year <= parseInt(filters.gap_year))) &&
-        (filters.branch === "" || application.branch === filters.branch)
-      );
-    });
-    setFilteredApplications(filtered);
-  }, [filters, jobApplications]);
+  // useEffect(() => {
+  //   const filtered = jobApplications.filter((application) => {
+  //     return (
+  //       (filters.cgpa === "" || application.cgpa >= parseFloat(filters.cgpa)) &&
+  //       (filters.hsc === "" || application.hsc >= parseFloat(filters.hsc)) &&
+  //       (filters.ssc === "" || application.ssc >= parseFloat(filters.ssc)) &&
+  //       (filters.gap_year === "" ||
+  //         (application.gap_year && application.gap_year <= parseInt(filters.gap_year))) &&
+  //       (filters.branch === "" || application.branch === filters.branch)
+  //     );
+  //   });
+  //   setFilteredApplications(filtered);
+  // }, [filters, jobApplications]);
 
-  const { isAuthenticated, admin } = useContext(Context);
+  const { isAuthenticated } = useContext(Context);
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;
   }
@@ -169,149 +168,150 @@ const Dashboard = () => {
         <Route
           path="/"
           element={
-            <section className="dashboard page">
-              <div className="filter-section">
-                <h5>Filter Student Applications</h5>
-                <div className="filters">
-                  <input
-                    type="number"
-                    name="cgpa"
-                    placeholder="Min CGPA"
-                    value={filters.cgpa}
-                    onChange={handleFilterChange}
-                  />
-                  <input
-                    type="number"
-                    name="hsc"
-                    placeholder="Min HSC Marks"
-                    value={filters.hsc}
-                    onChange={handleFilterChange}
-                  />
-                  <input
-                    type="number"
-                    name="ssc"
-                    placeholder="Min SSC Marks"
-                    value={filters.ssc}
-                    onChange={handleFilterChange}
-                  />
-                  <input
-                    type="number"
-                    name="gap_year"
-                    placeholder="Max Gap Year"
-                    value={filters.gap_year}
-                    onChange={handleFilterChange}
-                  />
-                  <input
-                    name="branch"
-                    placeholder="Branch"
-                    value={filters.branch}
-                    onChange={handleFilterChange}
-                  />
-                  <button className="csv-button" onClick={handleDownloadCSV}>
-                    Download CSV
-                  </button>
-                  <button className="csv-button" onClick={() => setEmailModalIsOpen(true)}>
-                    Send Emails
-                  </button>
+            <section className="p-6 bg-gray-100 min-h-screen">
+              <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+                <div className="bg-blue-500 text-white p-4">
+                  <h1 className="text-2xl font-bold">Dashboard</h1>
                 </div>
-              </div>
-              <div className="banner">
-                <h5>Student Applications</h5>
-                <div className="table-container">
-                  <table className="styled-table">
-                    <thead>
-                      <tr>
-                        <th>Full Name</th>
-                        <th>Registration Number</th>
-                        <th>CGPA</th>
-                        <th>HSC Marks</th>
-                        <th>SSC Marks</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Placed</th>
-                        <th>Package</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredApplications.length > 0
-                        ? filteredApplications.map((application) => (
-                            <tr key={application._id}>
-                              <td>{application.fullName}</td>
-                              <td>
-                                <Link to={`/job-application/${application.reg}`}>
-                                  {application.reg}
-                                </Link>
-                              </td>
-                              <td>{application.cgpa}</td>
-                              <td>{application.hsc}</td>
-                              <td>{application.ssc}</td>
-                              <td>{application.branch}</td>
-                              <td>
-                                <select
-                                  className={
-                                    application.status === "Pending"
-                                      ? "value-pending"
-                                      : application.status === "Accepted"
-                                      ? "value-accepted"
-                                      : "value-rejected"
-                                  }
-                                  value={application.status}
-                                  onChange={(e) =>
-                                    handleUpdateStatus(application._id, "status", e.target.value)
-                                  }
-                                >
-                                  <option value="Pending" className="value-pending">
-                                    Pending
-                                  </option>
-                                  <option value="Accepted" className="value-accepted">
-                                    Accepted
-                                  </option>
-                                  <option value="Rejected" className="value-rejected">
-                                    Rejected
-                                  </option>
-                                </select>
-                              </td>
-                              <td>
-                                <select
-                                  value={application.placed}
-                                  onChange={(e) =>
-                                    handleUpdateStatus(application._id, "placed", e.target.value)
-                                  }
-                                >
-                                  <option value="Placed">Placed</option>
-                                  <option value="Rejected">Rejected</option>
-                                </select>
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  value={application.amount || ""}
-                                  placeholder="Package"
-                                  onChange={(e) =>
-                                    handleUpdateStatus(application._id, "amount", e.target.value)
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <button
-                                  className="button"
-                                  onClick={() => openModal(application.proof.url)}
-                                >
-                                  View Proof
-                                </button>
+                <div className="p-6">
+                  <div className="mb-6">
+                    <h5 className="text-xl font-semibold mb-4">Filter Student Applications</h5>
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                      <input
+                        type="number"
+                        name="cgpa"
+                        placeholder="Min CGPA"
+                        value={filters.cgpa}
+                        onChange={handleFilterChange}
+                        className="border rounded px-3 py-2"
+                      />
+                      <input
+                        type="number"
+                        name="hsc"
+                        placeholder="Min HSC Marks"
+                        value={filters.hsc}
+                        onChange={handleFilterChange}
+                        className="border rounded px-3 py-2"
+                      />
+                      <input
+                        type="number"
+                        name="ssc"
+                        placeholder="Min SSC Marks"
+                        value={filters.ssc}
+                        onChange={handleFilterChange}
+                        className="border rounded px-3 py-2"
+                      />
+                      <input
+                        type="number"
+                        name="gap_year"
+                        placeholder="Max Gap Year"
+                        value={filters.gap_year}
+                        onChange={handleFilterChange}
+                        className="border rounded px-3 py-2"
+                      />
+                      <input
+                        name="branch"
+                        placeholder="Branch"
+                        value={filters.branch}
+                        onChange={handleFilterChange}
+                        className="border rounded px-3 py-2"
+                      />
+                    </div>
+                    <div className="flex justify-end mt-4 space-x-4">
+                      <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300" onClick={handleDownloadCSV}>
+                        Download CSV
+                      </button>
+                      <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300" onClick={() => setEmailModalIsOpen(true)}>
+                        Send Emails
+                      </button>
+                    </div>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white border rounded-lg">
+                      <thead>
+                        <tr className="w-full bg-gray-200">
+                          <th className="py-2 px-4 text-left">Full Name</th>
+                          <th className="py-2 px-4 text-left">Registration Number</th>
+                          <th className="py-2 px-4 text-left">CGPA</th>
+                          <th className="py-2 px-4 text-left">HSC Marks</th>
+                          <th className="py-2 px-4 text-left">SSC Marks</th>
+                          <th className="py-2 px-4 text-left">Department</th>
+                          <th className="py-2 px-4 text-left">Status</th>
+                          <th className="py-2 px-4 text-left">Placed</th>
+                          <th className="py-2 px-4 text-left">Package</th>
+                          <th className="py-2 px-4 text-left">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredApplications.length > 0
+                          ? filteredApplications.map((application) => (
+                              <tr key={application._id} className="border-b">
+                                <td className="py-2 px-4">{application.fullName}</td>
+                                <td className="py-2 px-4">
+                                  <Link to={`/job-application/${application.reg}`} className="text-blue-500 hover:underline">
+                                    {application.reg}
+                                  </Link>
+                                </td>
+                                <td className="py-2 px-4">{application.cgpa}</td>
+                                <td className="py-2 px-4">{application.hsc}</td>
+                                <td className="py-2 px-4">{application.ssc}</td>
+                                <td className="py-2 px-4">{application.branch}</td>
+                                <td className="py-2 px-4">
+                                  <select
+                                    className={`border rounded px-2 py-1 ${application.status === "Pending" ? "bg-yellow-100" : application.status === "Accepted" ? "bg-green-100" : "bg-red-100"}`}
+                                    value={application.status}
+                                    onChange={(e) =>
+                                      handleUpdateStatus(application._id, "status", e.target.value)
+                                    }
+                                  >
+                                    <option value="Pending">Pending</option>
+                                    <option value="Accepted">Accepted</option>
+                                    <option value="Rejected">Rejected</option>
+                                  </select>
+                                </td>
+                                <td className="py-2 px-4">
+                                  <select
+                                    className="border rounded px-2 py-1"
+                                    value={application.placed}
+                                    onChange={(e) =>
+                                      handleUpdateStatus(application._id, "placed", e.target.value)
+                                    }
+                                  >
+                                    <option value="Placed">Placed</option>
+                                    <option value="Rejected">Rejected</option>
+                                  </select>
+                                </td>
+                                <td className="py-2 px-4">
+                                  <input
+                                    type="number"
+                                    className="border rounded px-2 py-1"
+                                    value={application.amount || ""}
+                                    placeholder="Package"
+                                    onChange={(e) =>
+                                      handleUpdateStatus(application._id, "amount", e.target.value)
+                                    }
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <button
+                                    className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition duration-300"
+                                    onClick={() => openModal(application.proof.url)}
+                                  >
+                                    View Proof
+                                  </button>
+                                </td>
+                              </tr>
+                            ))
+                          : (
+                            <tr>
+                              <td colSpan="10" className="text-center py-4 text-gray-500">
+                                No job applications found.
                               </td>
                             </tr>
-                          ))
-                        : (
-                          <tr>
-                            <td colSpan="10" className="no-applications">
-                              No job applications found.
-                            </td>
-                          </tr>
-                        )}
-                    </tbody>
-                  </table>
+                          )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
               <Modal
@@ -319,41 +319,46 @@ const Dashboard = () => {
                 onRequestClose={closeModal}
                 contentLabel="Proof Modal"
                 className="modal"
+                overlayClassName="modal-overlay"
               >
-                <button className="close-modal" onClick={closeModal}>
+                <button className="absolute top-2 right-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300" onClick={closeModal}>
                   <AiFillCloseCircle />
                 </button>
-                {proofUrl && <img src={proofUrl} alt="Proof" />}
+                {proofUrl && <img src={proofUrl} alt="Proof" className="w-full h-auto" />}
               </Modal>
               <Modal
                 isOpen={emailModalIsOpen}
                 onRequestClose={() => setEmailModalIsOpen(false)}
                 contentLabel="Email Modal"
                 className="modal"
+                overlayClassName="modal-overlay"
               >
                 <button
-                  className="close-modal"
+                  className="absolute top-2 right-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
                   onClick={() => setEmailModalIsOpen(false)}
                 >
                   <AiFillCloseCircle />
                 </button>
-                <h2>Email Content</h2>
-                <div>
-                  <label>Email Subject</label>
+                <h2 className="text-xl font-semibold mb-4">Email Content</h2>
+                <div className="mb-4">
+                  <label className="block mb-2">Email Subject</label>
                   <input
                     type="text"
                     value={emailSubject}
                     onChange={(e) => setEmailSubject(e.target.value)}
+                    className="border rounded px-3 py-2 w-full"
                   />
                 </div>
-                <div>
-                  <label>Email Content</label>
+                <div className="mb-4">
+                  <label className="block mb-2">Email Content</label>
                   <textarea
                     value={emailContent}
                     onChange={(e) => setEmailContent(e.target.value)}
+                    rows="5"
+                    className="border rounded px-3 py-2 w-full"
                   ></textarea>
                 </div>
-                <button onClick={handleSendEmails}>Send Emails</button>
+                <button onClick={handleSendEmails} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Send Emails</button>
               </Modal>
             </section>
           }

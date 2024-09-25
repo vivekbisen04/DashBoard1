@@ -74,6 +74,9 @@ const AddNewDoctor = () => {
           setDob("");
           setGender("");
           setPassword("");
+          setDoctorDepartment("");
+          setDocAvatar("");
+          setDocAvatarPreview("");
         });
     } catch (error) {
       toast.error(error.response.data.message);
@@ -83,93 +86,109 @@ const AddNewDoctor = () => {
   if (!isAuthenticated) {
     return <Navigate to={"/login"} />;
   }
+
   return (
-    <section className="page">
-      <section className="container add-doctor-form">
-        <img src="/logo.png" alt="logo" className="logo"/>
-        <h1 className="form-title">REGISTER A NEW DOCTOR</h1>
-        <form onSubmit={handleAddNewDoctor}>
-          <div className="first-wrapper">
-            <div>
-              <img
-                src={
-                  docAvatarPreview ? `${docAvatarPreview}` : "/docHolder.jpg"
-                }
-                alt="Doctor Avatar"
-              />
-              <input type="file" onChange={handleAvatar} />
-            </div>
-            <div>
-              <input
-                type="text"
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <input
-                type="number"
-                placeholder="Mobile Number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-              <input
-                type="number"
-                placeholder="NIC"
-                value={nic}
-                onChange={(e) => setNic(e.target.value)}
-              />
-              <input
-                type={"date"}
-                placeholder="Date of Birth"
-                value={dob}
-                onChange={(e) => setDob(e.target.value)}
-              />
-              <select
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <select
-                value={doctorDepartment}
-                onChange={(e) => {
-                  setDoctorDepartment(e.target.value);
-                }}
-              >
-                <option value="">Select Department</option>
-                {departmentsArray.map((depart, index) => {
-                  return (
-                    <option value={depart} key={index}>
-                      {depart}
-                    </option>
-                  );
-                })}
-              </select>
-              <button type="submit">Register New Doctor</button>
-            </div>
+    <section className="min-h-screen flex items-center justify-center  ">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full">
+        <img src="/logo.png" alt="logo" className="w-24 mx-auto mb-6" />
+        <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
+          REGISTER A NEW DOCTOR
+        </h1>
+        <form onSubmit={handleAddNewDoctor} className="space-y-4">
+          <div className="flex flex-col items-center">
+            <img
+              src={docAvatarPreview || "/docHolder.jpg"}
+              alt="Doctor Avatar"
+              className="w-24 h-24 rounded-full object-cover mb-2"
+            />
+            <input
+              type="file"
+              onChange={handleAvatar}
+              className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="tel"
+              placeholder="Mobile Number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="text"
+              placeholder="NIC"
+              value={nic}
+              onChange={(e) => setNic(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="date"
+              placeholder="Date of Birth"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <select
+              value={doctorDepartment}
+              onChange={(e) => setDoctorDepartment(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Department</option>
+              {departmentsArray.map((dept, index) => (
+                <option key={index} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="w-full md:w-auto bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+            >
+              REGISTER A NEW DOCTOR
+            </button>
           </div>
         </form>
-      </section>
+      </div>
     </section>
   );
 };
