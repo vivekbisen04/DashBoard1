@@ -15,7 +15,7 @@ import JobApplicationDetail from "./components/JobApplicationDetail";
 const App = () => {
   const { isAuthenticated, setIsAuthenticated, admin, setAdmin } =
     useContext(Context);
-  const yy = " https://backend-1-qebm.onrender.com";
+  const yy = "  https://backend1-96bk.onrender.com";
 
   useEffect(() => {
     const fetchUser = async () => {
