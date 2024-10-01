@@ -3,11 +3,11 @@ import { useParams } from "react-router-dom";
 import "./JobApplicationDetail.css";
 import { FaEye, FaEdit, FaSave, FaCheckCircle } from "react-icons/fa";
 import Modal from "react-modal";
-import { Viewer, Worker } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css';
+import { Viewer, Worker } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
 
 const JobApplicationDetail = () => {
-  const yy="https://backend1-96bk.onrender.com";
+  const yy = "http://localhost:4000";
   const { reg } = useParams();
   const [jobApplication, setJobApplication] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -25,7 +25,7 @@ const JobApplicationDetail = () => {
         const response = await fetch(
           `${yy}/api/v1/jobApplication/detail/${reg}`,
           {
-            credentials: 'include'
+            credentials: "include",
           }
         );
         const data = await response.json();
@@ -62,7 +62,7 @@ const JobApplicationDetail = () => {
   };
 
   const handleInputChange = (e, field) => {
-    const value = e.target.type === 'file' ? e.target.files[0] : e.target.value;
+    const value = e.target.type === "file" ? e.target.files[0] : e.target.value;
     setJobApplication({ ...jobApplication, [field]: value });
   };
 
@@ -77,9 +77,9 @@ const JobApplicationDetail = () => {
 
       const endpoint = `${yy}/api/v1/jobApplication/update/${jobApplication._id}`;
       const response = await fetch(endpoint, {
-        method: 'PUT',
+        method: "PUT",
         body: formData,
-        credentials: 'include'
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -104,9 +104,9 @@ const JobApplicationDetail = () => {
 
       const endpoint = `${yy}/api/v1/jobApplication/update/${jobApplication._id}`;
       const response = await fetch(endpoint, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           verificationUpdates: {
@@ -116,7 +116,7 @@ const JobApplicationDetail = () => {
             },
           },
         }),
-        credentials: 'include'
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -136,15 +136,15 @@ const JobApplicationDetail = () => {
   const sendCorrectionEmail = async () => {
     try {
       const response = await fetch(`${yy}/api/v1/sendCorrectionEmail`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: jobApplication.email,
           message: emailBody,
         }),
-        credentials: 'include'
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -169,7 +169,11 @@ const JobApplicationDetail = () => {
   }
 
   if (!jobApplication) {
-    return <div className="error-message">Error loading job application details.</div>;
+    return (
+      <div className="error-message">
+        Error loading job application details.
+      </div>
+    );
   }
 
   return (
@@ -181,63 +185,80 @@ const JobApplicationDetail = () => {
         <div className="details-container">
           <section className="detail-card">
             <h2>Personal Information</h2>
-            {['fullName', 'email', 'phone', 'dob', 'gender', 'address'].map(field => (
-              <div key={field} className="field">
-                <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong> 
-                {editMode[field] ? (
-                  field === 'dob' ? (
-                    <input
-                      type="date"
-                      value={jobApplication[field]}
-                      onChange={(e) => handleInputChange(e, field)}
-                    />
-                  ) : field === 'gender' ? (
-                    <select
-                      value={jobApplication[field]}
-                      onChange={(e) => handleInputChange(e, field)}
-                    >
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  ) : field === 'address' ? (
-                    <textarea
-                      value={jobApplication[field]}
-                      onChange={(e) => handleInputChange(e, field)}
-                    />
+            {["fullName", "email", "phone", "dob", "gender", "address"].map(
+              (field) => (
+                <div key={field} className="field">
+                  <strong>
+                    {field.charAt(0).toUpperCase() + field.slice(1)}:
+                  </strong>
+                  {editMode[field] ? (
+                    field === "dob" ? (
+                      <input
+                        type="date"
+                        value={jobApplication[field]}
+                        onChange={(e) => handleInputChange(e, field)}
+                      />
+                    ) : field === "gender" ? (
+                      <select
+                        value={jobApplication[field]}
+                        onChange={(e) => handleInputChange(e, field)}
+                      >
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    ) : field === "address" ? (
+                      <textarea
+                        value={jobApplication[field]}
+                        onChange={(e) => handleInputChange(e, field)}
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={jobApplication[field]}
+                        onChange={(e) => handleInputChange(e, field)}
+                      />
+                    )
                   ) : (
-                    <input
-                      type="text"
-                      value={jobApplication[field]}
-                      onChange={(e) => handleInputChange(e, field)}
+                    <span>{jobApplication[field]}</span>
+                  )}
+                  <FaEdit
+                    onClick={() => toggleEditMode(field)}
+                    className="edit-icon"
+                  />
+                  {editMode[field] && (
+                    <FaSave
+                      onClick={() => saveChanges(field)}
+                      className="save-icon"
                     />
-                  )
-                ) : (
-                  <span>{jobApplication[field]}</span>
-                )}
-                <FaEdit onClick={() => toggleEditMode(field)} className="edit-icon" />
-                {editMode[field] && <FaSave onClick={() => saveChanges(field)} className="save-icon" />}
-                {jobApplication[field]?.verification && (
-                  <>
-                    <FaCheckCircle 
-                      onClick={() => toggleVerification(field)} 
-                      className={`verify-icon ${jobApplication[field].verification.isVerified ? 'verified' : ''}`} 
-                    />
-                    {jobApplication[field].verification.isVerified && (
-                      <span className="verified-by">
-                        Verified by {jobApplication[field].verification.verifiedBy}
-                      </span>
-                    )}
-                  </>
-                )}
-              </div>
-            ))}
+                  )}
+                  {jobApplication[field]?.verification && (
+                    <>
+                      <FaCheckCircle
+                        onClick={() => toggleVerification(field)}
+                        className={`verify-icon ${
+                          jobApplication[field].verification.isVerified
+                            ? "verified"
+                            : ""
+                        }`}
+                      />
+                      {jobApplication[field].verification.isVerified && (
+                        <span className="verified-by">
+                          Verified by{" "}
+                          {jobApplication[field].verification.verifiedBy}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </div>
+              )
+            )}
           </section>
           <section className="detail-card">
             <h2>Educational Background</h2>
-            {['cgpa', 'ssc', 'hsc', 'gap_year', 'backlogs'].map(field => (
+            {["cgpa", "ssc", "hsc", "gap_year", "backlogs"].map((field) => (
               <div key={field} className="field">
-                <strong>{field.toUpperCase()}:</strong> 
+                <strong>{field.toUpperCase()}:</strong>
                 {editMode[field] ? (
                   <input
                     type="text"
@@ -247,44 +268,85 @@ const JobApplicationDetail = () => {
                 ) : (
                   <span>{jobApplication[field]}</span>
                 )}
-                <FaEdit onClick={() => toggleEditMode(field)} className="edit-icon" />
-                {editMode[field] && <FaSave onClick={() => saveChanges(field)} className="save-icon" />}
+                <FaEdit
+                  onClick={() => toggleEditMode(field)}
+                  className="edit-icon"
+                />
+                {editMode[field] && (
+                  <FaSave
+                    onClick={() => saveChanges(field)}
+                    className="save-icon"
+                  />
+                )}
                 {jobApplication[field]?.verification && (
                   <>
-                    <FaCheckCircle 
-                      onClick={() => toggleVerification(field)} 
-                      className={`verify-icon ${jobApplication[field].verification.isVerified ? 'verified' : ''}`} 
+                    <FaCheckCircle
+                      onClick={() => toggleVerification(field)}
+                      className={`verify-icon ${
+                        jobApplication[field].verification.isVerified
+                          ? "verified"
+                          : ""
+                      }`}
                     />
                     {jobApplication[field].verification.isVerified && (
                       <span className="verified-by">
-                        Verified by {jobApplication[field].verification.verifiedBy}
+                        Verified by{" "}
+                        {jobApplication[field].verification.verifiedBy}
                       </span>
                     )}
                   </>
                 )}
               </div>
             ))}
-            {['cgpaProof', 'sscProof', 'hscProof', 'internshipProof', 'gap_yearProof', 'profilePhotoProof'].map(field => (
+            {[
+              "cgpaProof",
+              "sscProof",
+              "hscProof",
+              "internshipProof",
+              "gap_yearProof",
+              "profilePhotoProof",
+            ].map((field) => (
               <div key={field} className="field">
-                <strong>{field.replace('Proof', '').toUpperCase()} Proof:</strong> 
+                <strong>
+                  {field.replace("Proof", "").toUpperCase()} Proof:
+                </strong>
                 {editMode[field] ? (
                   <>
-                    <input type="file" onChange={(e) => handleInputChange(e, field)} />
-                    <FaSave onClick={() => saveChanges(field)} className="save-icon" />
+                    <input
+                      type="file"
+                      onChange={(e) => handleInputChange(e, field)}
+                    />
+                    <FaSave
+                      onClick={() => saveChanges(field)}
+                      className="save-icon"
+                    />
                   </>
                 ) : (
-                  jobApplication[field]?.url && <FaEye className="eye-icon" onClick={() => openModal(jobApplication[field]?.url)} />
+                  jobApplication[field]?.url && (
+                    <FaEye
+                      className="eye-icon"
+                      onClick={() => openModal(jobApplication[field]?.url)}
+                    />
+                  )
                 )}
-                <FaEdit onClick={() => toggleEditMode(field)} className="edit-icon" />
+                <FaEdit
+                  onClick={() => toggleEditMode(field)}
+                  className="edit-icon"
+                />
                 {jobApplication[field]?.verification && (
                   <>
-                    <FaCheckCircle 
-                      onClick={() => toggleVerification(field)} 
-                      className={`verify-icon ${jobApplication[field].verification.isVerified ? 'verified' : ''}`} 
+                    <FaCheckCircle
+                      onClick={() => toggleVerification(field)}
+                      className={`verify-icon ${
+                        jobApplication[field].verification.isVerified
+                          ? "verified"
+                          : ""
+                      }`}
                     />
                     {jobApplication[field].verification.isVerified && (
                       <span className="verified-by">
-                        Verified by {jobApplication[field].verification.verifiedBy}
+                        Verified by{" "}
+                        {jobApplication[field].verification.verifiedBy}
                       </span>
                     )}
                   </>
@@ -294,9 +356,11 @@ const JobApplicationDetail = () => {
           </section>
           <section className="detail-card">
             <h2>Professional Experience</h2>
-            {['projects', 'internship'].map(field => (
+            {["projects", "internship"].map((field) => (
               <div key={field} className="field">
-                <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong> 
+                <strong>
+                  {field.charAt(0).toUpperCase() + field.slice(1)}:
+                </strong>
                 {editMode[field] ? (
                   <textarea
                     value={jobApplication[field]}
@@ -305,17 +369,30 @@ const JobApplicationDetail = () => {
                 ) : (
                   <span>{jobApplication[field]}</span>
                 )}
-                <FaEdit onClick={() => toggleEditMode(field)} className="edit-icon" />
-                {editMode[field] && <FaSave onClick={() => saveChanges(field)} className="save-icon" />}
+                <FaEdit
+                  onClick={() => toggleEditMode(field)}
+                  className="edit-icon"
+                />
+                {editMode[field] && (
+                  <FaSave
+                    onClick={() => saveChanges(field)}
+                    className="save-icon"
+                  />
+                )}
                 {jobApplication[field]?.verification && (
                   <>
-                    <FaCheckCircle 
-                      onClick={() => toggleVerification(field)} 
-                      className={`verify-icon ${jobApplication[field].verification.isVerified ? 'verified' : ''}`} 
+                    <FaCheckCircle
+                      onClick={() => toggleVerification(field)}
+                      className={`verify-icon ${
+                        jobApplication[field].verification.isVerified
+                          ? "verified"
+                          : ""
+                      }`}
                     />
                     {jobApplication[field].verification.isVerified && (
                       <span className="verified-by">
-                        Verified by {jobApplication[field].verification.verifiedBy}
+                        Verified by{" "}
+                        {jobApplication[field].verification.verifiedBy}
                       </span>
                     )}
                   </>
@@ -325,9 +402,11 @@ const JobApplicationDetail = () => {
           </section>
           <section className="detail-card">
             <h2>Additional Information</h2>
-            {['branch', 'skills', 'references'].map(field => (
+            {["branch", "skills", "references"].map((field) => (
               <div key={field} className="field">
-                <strong>{field.charAt(0).toUpperCase() + field.slice(1)}:</strong> 
+                <strong>
+                  {field.charAt(0).toUpperCase() + field.slice(1)}:
+                </strong>
                 {editMode[field] ? (
                   <textarea
                     value={jobApplication[field]}
@@ -336,17 +415,30 @@ const JobApplicationDetail = () => {
                 ) : (
                   <span>{jobApplication[field]}</span>
                 )}
-                <FaEdit onClick={() => toggleEditMode(field)} className="edit-icon" />
-                {editMode[field] && <FaSave onClick={() => saveChanges(field)} className="save-icon" />}
+                <FaEdit
+                  onClick={() => toggleEditMode(field)}
+                  className="edit-icon"
+                />
+                {editMode[field] && (
+                  <FaSave
+                    onClick={() => saveChanges(field)}
+                    className="save-icon"
+                  />
+                )}
                 {jobApplication[field]?.verification && (
                   <>
-                    <FaCheckCircle 
-                      onClick={() => toggleVerification(field)} 
-                      className={`verify-icon ${jobApplication[field].verification.isVerified ? 'verified' : ''}`} 
+                    <FaCheckCircle
+                      onClick={() => toggleVerification(field)}
+                      className={`verify-icon ${
+                        jobApplication[field].verification.isVerified
+                          ? "verified"
+                          : ""
+                      }`}
                     />
                     {jobApplication[field].verification.isVerified && (
                       <span className="verified-by">
-                        Verified by {jobApplication[field].verification.verifiedBy}
+                        Verified by{" "}
+                        {jobApplication[field].verification.verifiedBy}
                       </span>
                     )}
                   </>
@@ -365,7 +457,9 @@ const JobApplicationDetail = () => {
                 cols="50"
               />
             </div>
-            <button onClick={sendCorrectionEmail} className="send-email-button">Send Correction Email</button>
+            <button onClick={sendCorrectionEmail} className="send-email-button">
+              Send Correction Email
+            </button>
             {emailSent && <p>Email sent successfully.</p>}
           </section>
           <section className="detail-card">
@@ -373,52 +467,61 @@ const JobApplicationDetail = () => {
             <div className="field">
               <textarea
                 value={jobApplication.message}
-                onChange={(e) => handleInputChange(e, 'message')}
+                onChange={(e) => handleInputChange(e, "message")}
                 rows="5"
                 cols="50"
               />
             </div>
-            <button onClick={() => saveChanges('message')} className="send-email-button">Leave Correction Message</button>
+            <button
+              onClick={() => saveChanges("message")}
+              className="send-email-button"
+            >
+              Leave Correction Message
+            </button>
           </section>
         </div>
       </div>
       <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          contentLabel="Proof Modal"
-          style={{
-            content: {
-              top: "50%",
-              left: "50%",
-              right: "auto",
-              bottom: "auto",
-              marginRight: "-50%",
-              transform: "translate(-50%, -50%)",
-              width: "80%",
-              height: "80%",
-            },
-          }}
-        >
-          <button onClick={closeModal} className="close-modal-button">
-            Close
-          </button>
-          <div className="proof-content">
-            {proofUrl.endsWith(".pdf") ? (
-              <iframe
-                src={proofUrl}
-                title="Proof Document"
-                style={{ width: "100%", height: "100%" }}
-              ></iframe>
-            ) : (
-              <img src={proofUrl} alt="Proof Document" style={{ width: "100%" }} />
-            )}
-            <div>
-              <a href={proofUrl} target="_blank" rel="noopener noreferrer">
-                Open Document
-              </a>
-            </div>
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Proof Modal"
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+            width: "80%",
+            height: "80%",
+          },
+        }}
+      >
+        <button onClick={closeModal} className="close-modal-button">
+          Close
+        </button>
+        <div className="proof-content">
+          {proofUrl.endsWith(".pdf") ? (
+            <iframe
+              src={proofUrl}
+              title="Proof Document"
+              style={{ width: "100%", height: "100%" }}
+            ></iframe>
+          ) : (
+            <img
+              src={proofUrl}
+              alt="Proof Document"
+              style={{ width: "100%" }}
+            />
+          )}
+          <div>
+            <a href={proofUrl} target="_blank" rel="noopener noreferrer">
+              Open Document
+            </a>
           </div>
-        </Modal>
+        </div>
+      </Modal>
     </>
   );
 };

@@ -15,7 +15,7 @@ const Sidebar = () => {
   const [show, setShow] = useState(false);
 
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
-  const yy="https://backend1-96bk.onrender.com";
+  const yy = "http://localhost:4000";
 
   const handleLogout = async () => {
     await axios
@@ -37,18 +37,7 @@ const Sidebar = () => {
     navigateTo("/");
     setShow(!show);
   };
-  const gotoDoctorsPage = () => {
-    navigateTo("/doctors");
-    setShow(!show);
-  };
-  const gotoMessagesPage = () => {
-    navigateTo("/messages");
-    setShow(!show);
-  };
-  const gotoAddNewDoctor = () => {
-    navigateTo("/doctor/addnew");
-    setShow(!show);
-  };
+ 
   const gotoAddNewAdmin = () => {
     navigateTo("/admin/addnew");
     setShow(!show);
@@ -64,7 +53,7 @@ const Sidebar = () => {
           {/* <TiHome onClick={gotoHomePage} /> */}
           {/* <FaUserDoctor onClick={gotoDoctorsPage} /> */}
           <MdAddModerator onClick={gotoAddNewAdmin} />
-          <IoPersonAddSharp onClick={gotoAddNewDoctor} />
+       
           {/* <AiFillMessage onClick={gotoMessagesPage} /> */}
           <RiLogoutBoxFill onClick={handleLogout} />
         </div>
