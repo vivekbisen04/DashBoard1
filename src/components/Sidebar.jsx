@@ -15,7 +15,7 @@ const Sidebar = () => {
   const [show, setShow] = useState(false);
 
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
-  const yy = "http://localhost:4000";
+  const yy = " https://backend-1-qebm.onrender.com";
 
   const handleLogout = async () => {
     await axios
@@ -37,7 +37,7 @@ const Sidebar = () => {
     navigateTo("/");
     setShow(!show);
   };
- 
+
   const gotoAddNewAdmin = () => {
     navigateTo("/admin/addnew");
     setShow(!show);
@@ -53,7 +53,7 @@ const Sidebar = () => {
           {/* <TiHome onClick={gotoHomePage} /> */}
           {/* <FaUserDoctor onClick={gotoDoctorsPage} /> */}
           <MdAddModerator onClick={gotoAddNewAdmin} />
-       
+
           {/* <AiFillMessage onClick={gotoMessagesPage} /> */}
           <RiLogoutBoxFill onClick={handleLogout} />
         </div>
