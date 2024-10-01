@@ -5,7 +5,7 @@ import { Context } from "../main";
 import axios from "axios";
 
 const Login = () => {
-  const yy="https://backend1-96bk.onrender.com";
+  const yy = " https://backend-1-qebm.onrender.com";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -43,12 +43,10 @@ const Login = () => {
     console.group(" YGHJGJHV");
     return <Navigate to={"/"} />;
   }
-  
 
   return (
     <>
       <section className="container form-component">
-        
         <h1 className="form-title">WELCOME TO DashBoard</h1>
         <p>Only Admins Are Allowed To Access These Resources!</p>
         <form onSubmit={handleLogin}>

@@ -14,7 +14,7 @@ import Papa from "papaparse";
 Modal.setAppElement("#root");
 
 const Dashboard = () => {
-  const yy="https://backend1-96bk.onrender.com";
+  const yy = " https://backend-1-qebm.onrender.com";
   const [jobApplications, setJobApplications] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -35,10 +35,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchJobApplications = async () => {
       try {
-        const { data } = await axios.get(
-          `${yy}/api/v1/jobApplication/getall`,
-          { withCredentials: true }
-        );
+        const { data } = await axios.get(`${yy}/api/v1/jobApplication/getall`, {
+          withCredentials: true,
+        });
         setJobApplications(data.jobApplications);
         setFilteredApplications(data.jobApplications);
       } catch (error) {
@@ -108,7 +107,8 @@ const Dashboard = () => {
         (filters.hsc === "" || application.hsc >= parseFloat(filters.hsc)) &&
         (filters.ssc === "" || application.ssc >= parseFloat(filters.ssc)) &&
         (filters.gap_year === "" ||
-          (application.gap_year && application.gap_year <= parseInt(filters.gap_year))) &&
+          (application.gap_year &&
+            application.gap_year <= parseInt(filters.gap_year))) &&
         (filters.branch === "" || application.branch === filters.branch)
       );
     });
@@ -148,18 +148,24 @@ const Dashboard = () => {
   };
 
   const handleSendEmails = async () => {
-    const emailAddresses = filteredApplications.map((application) => application.email);
+    const emailAddresses = filteredApplications.map(
+      (application) => application.email
+    );
 
     try {
       const { data } = await axios.post(
         `${yy}/api/v1/sendEmail`,
-        { recipients: emailAddresses, subject: emailSubject, message: emailContent },
+        {
+          recipients: emailAddresses,
+          subject: emailSubject,
+          message: emailContent,
+        },
         { withCredentials: true }
       );
       toast.success(data.message);
       setEmailModalIsOpen(false);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -210,7 +216,10 @@ const Dashboard = () => {
                   <button className="csv-button" onClick={handleDownloadCSV}>
                     Download CSV
                   </button>
-                  <button className="csv-button" onClick={() => setEmailModalIsOpen(true)}>
+                  <button
+                    className="csv-button"
+                    onClick={() => setEmailModalIsOpen(true)}
+                  >
                     Send Emails
                   </button>
                 </div>
@@ -234,82 +243,103 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredApplications.length > 0
-                        ? filteredApplications.map((application) => (
-                            <tr key={application._id}>
-                              <td>{application.fullName}</td>
-                              <td>
-                                <Link to={`/job-application/${application.reg}`}>
-                                  {application.reg}
-                                </Link>
-                              </td>
-                              <td>{application.cgpa}</td>
-                              <td>{application.hsc}</td>
-                              <td>{application.ssc}</td>
-                              <td>{application.branch}</td>
-                              <td>
-                                <select
-                                  className={
-                                    application.status === "Pending"
-                                      ? "value-pending"
-                                      : application.status === "Accepted"
-                                      ? "value-accepted"
-                                      : "value-rejected"
-                                  }
-                                  value={application.status}
-                                  onChange={(e) =>
-                                    handleUpdateStatus(application._id, "status", e.target.value)
-                                  }
+                      {filteredApplications.length > 0 ? (
+                        filteredApplications.map((application) => (
+                          <tr key={application._id}>
+                            <td>{application.fullName}</td>
+                            <td>
+                              <Link to={`/job-application/${application.reg}`}>
+                                {application.reg}
+                              </Link>
+                            </td>
+                            <td>{application.cgpa}</td>
+                            <td>{application.hsc}</td>
+                            <td>{application.ssc}</td>
+                            <td>{application.branch}</td>
+                            <td>
+                              <select
+                                className={
+                                  application.status === "Pending"
+                                    ? "value-pending"
+                                    : application.status === "Accepted"
+                                    ? "value-accepted"
+                                    : "value-rejected"
+                                }
+                                value={application.status}
+                                onChange={(e) =>
+                                  handleUpdateStatus(
+                                    application._id,
+                                    "status",
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                <option
+                                  value="Pending"
+                                  className="value-pending"
                                 >
-                                  <option value="Pending" className="value-pending">
-                                    Pending
-                                  </option>
-                                  <option value="Accepted" className="value-accepted">
-                                    Accepted
-                                  </option>
-                                  <option value="Rejected" className="value-rejected">
-                                    Rejected
-                                  </option>
-                                </select>
-                              </td>
-                              <td>
-                                <select
-                                  value={application.placed}
-                                  onChange={(e) =>
-                                    handleUpdateStatus(application._id, "placed", e.target.value)
-                                  }
+                                  Pending
+                                </option>
+                                <option
+                                  value="Accepted"
+                                  className="value-accepted"
                                 >
-                                  <option value="Placed">Placed</option>
-                                  <option value="Rejected">Rejected</option>
-                                </select>
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  value={application.amount || ""}
-                                  placeholder="Package"
-                                  onChange={(e) =>
-                                    handleUpdateStatus(application._id, "amount", e.target.value)
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <button
-                                  className="button"
-                                  onClick={() => openModal(application.proof.url)}
+                                  Accepted
+                                </option>
+                                <option
+                                  value="Rejected"
+                                  className="value-rejected"
                                 >
-                                  View Proof
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        : (
-                          <tr>
-                            <td colSpan="10" className="no-applications">
-                              No job applications found.
+                                  Rejected
+                                </option>
+                              </select>
+                            </td>
+                            <td>
+                              <select
+                                value={application.placed}
+                                onChange={(e) =>
+                                  handleUpdateStatus(
+                                    application._id,
+                                    "placed",
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                <option value="Placed">Placed</option>
+                                <option value="Rejected">Rejected</option>
+                              </select>
+                            </td>
+                            <td>
+                              <input
+                                type="number"
+                                value={application.amount || ""}
+                                placeholder="Package"
+                                onChange={(e) =>
+                                  handleUpdateStatus(
+                                    application._id,
+                                    "amount",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                            <td>
+                              <button
+                                className="button"
+                                onClick={() => openModal(application.proof.url)}
+                              >
+                                View Proof
+                              </button>
                             </td>
                           </tr>
-                        )}
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="10" className="no-applications">
+                            No job applications found.
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -358,7 +388,10 @@ const Dashboard = () => {
             </section>
           }
         />
-        <Route path="/job-application/:reg" element={<JobApplicationDetail />} />
+        <Route
+          path="/job-application/:reg"
+          element={<JobApplicationDetail />}
+        />
       </Routes>
     </>
   );
