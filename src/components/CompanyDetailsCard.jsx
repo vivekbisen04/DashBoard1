@@ -1,4 +1,5 @@
-// CompanyDetailsCard.js
+// components/CompanyDetailsCard.js
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { MdCreate, MdDelete } from "react-icons/md";
@@ -11,17 +12,19 @@ const CompanyDetailsCard = () => {
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const yy = "http://localhost:4000"; // Base URL for API
+  const baseURL = "http://localhost:4000"; // Base URL for API
 
-
-   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const response = await axios.get(`${yy}/api/v1/company/get/${id}`, {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `${baseURL}/api/v1/company/get/${id}`,
+          {
+            withCredentials: true,
+          }
+        );
         setCompany(response.data.company || response.data.job || response.data);
       } catch (error) {
         console.error("Error fetching company details:", error);
@@ -32,7 +35,7 @@ const CompanyDetailsCard = () => {
     };
 
     fetchCompany();
-  }, [id, yy]);
+  }, [id, baseURL]);
 
   if (loading) {
     return <p className="text-center mt-8">Loading company details...</p>;
@@ -74,41 +77,57 @@ const CompanyDetailsCard = () => {
   const deadlineDate = new Date(applicationDeadline).toLocaleDateString();
 
   const handleEditClick = () => {
-    navigate(`/edit-company/${id}`, { state: { company } });
+    navigate(`/edit-company/${id}`);
+    // Alternatively, pass state if needed:
+    // navigate(`/edit-company/${id}`, { state: { company } });
   };
 
- const handleDeleteClick = async () => {
-   const confirmDelete = window.confirm(
-     "Are you sure you want to delete this company/job?"
-   );
-   if (!confirmDelete) return;
+  const handleDeleteClick = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this company/job?"
+    );
+    if (!confirmDelete) return;
 
-   setIsDeleting(true); // Start deletion process
+    setIsDeleting(true); // Start deletion process
 
-   try {
-     const response = await axios.delete(
-       `http://localhost:4000/api/v1/company/delete/${id}`,
-       {
-         withCredentials: true, // Include cookies if needed
-       }
-     );
+    try {
+      const response = await axios.delete(
+        `${baseURL}/api/v1/company/delete/${id}`,
+        {
+          withCredentials: true, // Include cookies if needed
+        }
+      );
 
-     if (response.data.success) {
-       toast.success(response.data.message || "Company deleted successfully!");
-       // Redirect to the specified route after successful deletion
-       window.location.href = "http://localhost:5173/admin/jobsearch";
-     } else {
-       toast.error(response.data.message || "Failed to delete the company.");
-       setIsDeleting(false); // Reset deletion status
-     }
-   } catch (error) {
-     console.error("Error deleting company:", error);
-     const errorMessage =
-       error.response?.data?.message || "An error occurred while deleting.";
-     toast.error(errorMessage);
-     setIsDeleting(false); // Reset deletion status
-   }
- };
+      if (response.data.success) {
+        toast.success(response.data.message || "Company deleted successfully!");
+        // Redirect to the specified route after successful deletion
+        navigate("/admin/jobsearch");
+      } else {
+        toast.error(response.data.message || "Failed to delete the company.");
+        setIsDeleting(false); // Reset deletion status
+      }
+    } catch (error) {
+      console.error("Error deleting company:", error);
+      const errorMessage =
+        error.response?.data?.message || "An error occurred while deleting.";
+      toast.error(errorMessage);
+      setIsDeleting(false); // Reset deletion status
+    }
+  };
+
+  const handleEligibleApplicants = () => {
+    const { eligibilityCriteria, jobRole } = company;
+
+    const queryParams = new URLSearchParams({
+      cgpa: eligibilityCriteria?.minCGPA || "",
+      hsc: eligibilityCriteria?.minHSCMarks || "",
+      ssc: eligibilityCriteria?.minSSCMarks || "",
+      gap_year: eligibilityCriteria?.maxGapYears || "",
+      branch: jobRole || "", // Adjust this if branch information is available differently
+    }).toString();
+
+    navigate(`/?${queryParams}`);
+  };
 
   return (
     <div className="container mx-auto my-8 p-6 bg-white rounded shadow-lg">
@@ -125,9 +144,13 @@ const CompanyDetailsCard = () => {
           </button>
           <button
             onClick={handleDeleteClick}
-            className="flex items-center bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+            disabled={isDeleting}
+            className={`flex items-center bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 ${
+              isDeleting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            <MdDelete className="mr-2" /> Delete
+            <MdDelete className="mr-2" />{" "}
+            {isDeleting ? "Deleting..." : "Delete"}
           </button>
         </div>
       </div>
@@ -208,7 +231,17 @@ const CompanyDetailsCard = () => {
         <p className="text-gray-600">{techStacks?.join(", ") || "N/A"}</p>
       </section>
 
-      <div className="flex justify-end">
+      {/* Eligible Applicants Button */}
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={handleEligibleApplicants}
+          className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
+        >
+          Eligible Applicants
+        </button>
+      </div>
+
+      <div className="flex justify-end mt-4">
         <button
           onClick={() => navigate(-1)}
           className="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600"

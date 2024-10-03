@@ -13,6 +13,7 @@ import "./App.css";
 import JobApplicationDetail from "./components/JobApplicationDetail";
 import JobSearch from "./components/JobSearch";
 import CompanyDetailsCard from "./components/CompanyDetailsCard";
+import EditCompany from "./components/EditCompany";
 
 
 const App = () => {
@@ -49,6 +50,7 @@ const App = () => {
           element={<JobApplicationDetail />}
         />
         <Route path="/company-details/:id" element={<CompanyDetailsCard />} />
+        <Route path="/edit-company/:id" element={<EditCompany />} />
         <Route path="/admin/jobsearch" element={<JobSearch />} />
       </Routes>
 
