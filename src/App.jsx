@@ -11,11 +11,15 @@ import Sidebar from "./components/Sidebar";
 import AddNewAdmin from "./components/AddNewAdmin";
 import "./App.css";
 import JobApplicationDetail from "./components/JobApplicationDetail";
+import JobSearch from "./components/JobSearch";
+import CompanyDetailsCard from "./components/CompanyDetailsCard";
+import EditCompany from "./components/EditCompany";
+
 
 const App = () => {
   const { isAuthenticated, setIsAuthenticated, admin, setAdmin } =
     useContext(Context);
-  const yy = "  https://backend1-96bk.onrender.com";
+  const yy = "  http://localhost:4000";
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -45,7 +49,11 @@ const App = () => {
           path="/job-application/:reg"
           element={<JobApplicationDetail />}
         />
+        <Route path="/company-details/:id" element={<CompanyDetailsCard />} />
+        <Route path="/edit-company/:id" element={<EditCompany />} />
+        <Route path="/admin/jobsearch" element={<JobSearch />} />
       </Routes>
+
       <ToastContainer position="top-center" />
     </Router>
   );

@@ -1,6 +1,8 @@
+// components/Dashboard.js
+
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../main";
-import { Navigate, Link, Route, Routes } from "react-router-dom";
+import { Navigate, Link, Route, Routes, useLocation } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { GoCheckCircleFill } from "react-icons/go";
@@ -14,7 +16,7 @@ import Papa from "papaparse";
 Modal.setAppElement("#root");
 
 const Dashboard = () => {
-  const yy = "  https://backend1-96bk.onrender.com";
+  const yy = "http://localhost:4000";
   const [jobApplications, setJobApplications] = useState([]);
   const [filteredApplications, setFilteredApplications] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -32,6 +34,26 @@ const Dashboard = () => {
   const [emailSubject, setEmailSubject] = useState("");
   const [emailContent, setEmailContent] = useState("");
 
+  const location = useLocation();
+
+  useEffect(() => {
+    // Read query parameters and set filters accordingly
+    const params = new URLSearchParams(location.search);
+    const cgpa = params.get("cgpa") || "";
+    const hsc = params.get("hsc") || "";
+    const ssc = params.get("ssc") || "";
+    const gap_year = params.get("gap_year") || "";
+    const branch = params.get("branch") || "";
+
+    setFilters({
+      cgpa,
+      hsc,
+      ssc,
+      gap_year,
+      branch,
+    });
+  }, [location.search]);
+
   useEffect(() => {
     const fetchJobApplications = async () => {
       try {
@@ -43,6 +65,7 @@ const Dashboard = () => {
       } catch (error) {
         setJobApplications([]);
         setFilteredApplications([]);
+        toast.error("Failed to fetch job applications.");
       }
     };
     fetchJobApplications();
@@ -71,7 +94,7 @@ const Dashboard = () => {
       );
       toast.success(data.message);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to update status.");
     }
   };
 
@@ -165,7 +188,7 @@ const Dashboard = () => {
       toast.success(data.message);
       setEmailModalIsOpen(false);
     } catch (error) {
-      console.log(error);
+      toast.error(error.response?.data?.message || "Failed to send emails.");
     }
   };
 

@@ -3,7 +3,7 @@ import { TiHome } from "react-icons/ti";
 import { RiLogoutBoxFill } from "react-icons/ri";
 import { AiFillMessage } from "react-icons/ai";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { FaUserDoctor } from "react-icons/fa6";
+import { FaPersonChalkboard } from "react-icons/fa6";
 import { MdAddModerator } from "react-icons/md";
 import { IoPersonAddSharp } from "react-icons/io5";
 import axios from "axios";
@@ -15,7 +15,7 @@ const Sidebar = () => {
   const [show, setShow] = useState(false);
 
   const { isAuthenticated, setIsAuthenticated } = useContext(Context);
-  const yy = "  https://backend1-96bk.onrender.com";
+  const yy = "  http://localhost:4000";
 
   const handleLogout = async () => {
     await axios
@@ -43,6 +43,11 @@ const Sidebar = () => {
     setShow(!show);
   };
 
+  const gotoJobSearch = () => {
+    navigateTo("/admin/jobsearch");
+    setShow(!show);
+  };
+
   return (
     <>
       <nav
@@ -55,6 +60,7 @@ const Sidebar = () => {
           <MdAddModerator onClick={gotoAddNewAdmin} />
 
           {/* <AiFillMessage onClick={gotoMessagesPage} /> */}
+          <FaPersonChalkboard onClick={gotoJobSearch} />
           <RiLogoutBoxFill onClick={handleLogout} />
         </div>
       </nav>
