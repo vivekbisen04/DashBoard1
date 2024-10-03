@@ -35,7 +35,7 @@ const CompanyDetailsCard = () => {
     };
 
     fetchCompany();
-  }, [id, baseURL]);
+  }, [id, yy]);
 
   if (loading) {
     return <p className="text-center mt-8">Loading company details...</p>;
