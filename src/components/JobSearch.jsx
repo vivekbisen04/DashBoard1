@@ -9,7 +9,7 @@ import SearchBar from "./SearchBar";
 import "./Dashboard.css";
 
 const JobSearch = () => {
-  const yy = "http://localhost:4000"; // Fixed URL by removing extra space
+  const yy = "https://backend1-96bk.onrender.com"; // Fixed URL by removing extra space
 
   // State to store company data
   const [companies, setCompanies] = useState([]);
