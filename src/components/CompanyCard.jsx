@@ -53,7 +53,7 @@ const CompanyCard = ({ company, onDelete, onEdit }) => {
           <div className="text-gray-600">Posted on: {postedDate}</div>
           {/* Explore button opens the details in a new tab */}
           <a
-            href={`/company-details/${_id}`}
+            href={`/company-details/${id}`}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600"
