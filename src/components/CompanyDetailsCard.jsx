@@ -20,7 +20,7 @@ const CompanyDetailsCard = () => {
     const fetchCompany = async () => {
       try {
         const response = await axios.get(
-          `${yy}/api/v1/company/get/${id}`,
+          `${yy}/api/v1/company/get/${_id}`,
           {
             withCredentials: true,
           }
