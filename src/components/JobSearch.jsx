@@ -7,12 +7,15 @@ import { toast } from "react-toastify";
 import CompanyCard from "./CompanyCard";
 import SearchBar from "./SearchBar";
 import "./Dashboard.css";
+import { urls } from "../urls";
 
 const JobSearch = () => {
   const yy = "http://localhost:4000"; // Fixed URL by removing extra space
 
   // State to store company data
   const [companies, setCompanies] = useState([]);
+  
+  
 
   // State for job applications and filters (if needed)
   const [jobApplications, setJobApplications] = useState([]);
