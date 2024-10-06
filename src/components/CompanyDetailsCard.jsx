@@ -12,7 +12,7 @@ const CompanyDetailsCard = () => {
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const baseURL = "http://localhost:4000"; // Base URL for API
+  const yy = "https://backend1-96bk.onrender.com"; // Base URL for API
 
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -20,7 +20,7 @@ const CompanyDetailsCard = () => {
     const fetchCompany = async () => {
       try {
         const response = await axios.get(
-          `${baseURL}/api/v1/company/get/${id}`,
+          `${yy}/api/v1/company/get/${_id}`,
           {
             withCredentials: true,
           }
@@ -35,7 +35,7 @@ const CompanyDetailsCard = () => {
     };
 
     fetchCompany();
-  }, [id, baseURL]);
+  }, [id, yy]);
 
   if (loading) {
     return <p className="text-center mt-8">Loading company details...</p>;
